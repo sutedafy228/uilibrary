@@ -1,0 +1,30 @@
+local Library = loadstring(game:HttpGet("ССЫЛКА_НА_ТВОЮ_БИБЛИОТЕКУ"))()
+
+local Window = Library:Window({
+    Text = "My GUI"
+})
+
+local Tab = Window:Tab({
+    Text = "Main"
+})
+
+local Section = Tab:Section({
+    Text = "Main",
+    Side = "Left",
+    Opened = true
+})
+
+Section:Button({
+    Text = "Test Button",
+    Callback = function()
+        print("Button clicked!")
+    end
+})
+
+Section:Toggle({
+    Text = "Test Toggle",
+    Default = false,
+    Callback = function(value)
+        print("Toggle:", value)
+    end
+})
