@@ -1,1 +1,501 @@
+local closeButton = Instance.new("ImageButton")
+closeButton.Name = "CloseButton"
+closeButton.Image = "rbxassetid://10738425363"
+closeButton.ImageTransparency = 0.1
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.BackgroundTransparency = 1
+closeButton.Position = UDim2.new(0.954, 3, 0.235, 0)
+closeButton.Size = UDim2.new(0, 17, 0, 17)
+closeButton.Parent = topbar
 
+closeButton.MouseEnter:Connect(function()
+    TweenService:Create(
+        closeButton,
+        TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut),
+        {ImageColor3 = Color3.fromRGB(255, 66, 66)}
+    ):Play()
+end)
+
+closeButton.MouseLeave:Connect(function()
+    TweenService:Create(
+        closeButton,
+        TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut),
+        {ImageColor3 = Color3.fromRGB(255, 255, 255)}
+    ):Play()
+end)
+
+
+--// GUI OPEN / CLOSE
+
+local GuiVisible = true
+local OpenKey = Enum.KeyCode.RightControl
+
+function window:SetVisible(state)
+    GuiVisible = state
+
+    unnamed.Enabled = state
+    shadow.Enabled = state
+
+    if notifications then
+        notifications.Enabled = state
+    end
+end
+
+function window:Toggle()
+    window:SetVisible(not GuiVisible)
+end
+
+function window:SetOpenKey(key)
+    if typeof(key) ~= "EnumItem" then
+        return
+    end
+
+    OpenKey = key
+end
+
+function window:GetOpenKey()
+    return OpenKey
+end
+
+
+--// CLOSE BUTTON
+--// X теперь только скрывает GUI
+
+closeButton.MouseButton1Click:Connect(function()
+    window:SetVisible(false)
+end)
+
+
+--// OPEN GUI KEY
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then
+        return
+    end
+
+    if input.KeyCode == OpenKey then
+        window:Toggle()
+    end
+end)
+
+
+--// SETTINGS BUTTON
+
+local settingsButton = Instance.new("ImageButton")
+settingsButton.Name = "SettingsButton"
+
+-- иконка шестерёнки
+settingsButton.Image = "rbxassetid://6031280882"
+
+settingsButton.ImageTransparency = 0.1
+settingsButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+settingsButton.BackgroundTransparency = 1
+settingsButton.Position = UDim2.new(0.954, -18, 0.235, 0)
+settingsButton.Size = UDim2.new(0, 17, 0, 17)
+settingsButton.Parent = topbar
+
+settingsButton.MouseEnter:Connect(function()
+    TweenService:Create(
+        settingsButton,
+        TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut),
+        {ImageColor3 = Theme.Highlight}
+    ):Play()
+end)
+
+settingsButton.MouseLeave:Connect(function()
+    TweenService:Create(
+        settingsButton,
+        TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut),
+        {ImageColor3 = Color3.fromRGB(255, 255, 255)}
+    ):Play()
+end)
+
+
+--// SETTINGS WINDOW
+
+local settingsOpen = false
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Name = "Settings"
+settingsFrame.BackgroundColor3 = Theme.Main
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Position = UDim2.new(0.5, -150, 0.5, -115)
+settingsFrame.Size = UDim2.new(0, 300, 0, 230)
+settingsFrame.Visible = false
+settingsFrame.ZIndex = 100
+settingsFrame.Parent = unnamed
+
+local settingsCorner = Instance.new("UICorner")
+settingsCorner.CornerRadius = UDim.new(0, 5)
+settingsCorner.Parent = settingsFrame
+
+local settingsStroke = Instance.new("UIStroke")
+settingsStroke.Color = Theme.MainUIStroke
+settingsStroke.Thickness = 1
+settingsStroke.Parent = settingsFrame
+
+
+--// SETTINGS TOPBAR
+
+local settingsTopbar = Instance.new("Frame")
+settingsTopbar.Name = "SettingsTopbar"
+settingsTopbar.BackgroundColor3 = Theme.Topbar
+settingsTopbar.BorderSizePixel = 0
+settingsTopbar.Size = UDim2.new(1, 0, 0, 36)
+settingsTopbar.ZIndex = 101
+settingsTopbar.Parent = settingsFrame
+
+local settingsTopbarCorner = Instance.new("UICorner")
+settingsTopbarCorner.CornerRadius = UDim.new(0, 5)
+settingsTopbarCorner.Parent = settingsTopbar
+
+local settingsTitle = Instance.new("TextLabel")
+settingsTitle.Name = "SettingsTitle"
+settingsTitle.BackgroundTransparency = 1
+settingsTitle.Position = UDim2.new(0, 12, 0, 0)
+settingsTitle.Size = UDim2.new(1, -50, 1, 0)
+settingsTitle.Font = Enum.Font.GothamBold
+settingsTitle.Text = "Settings"
+settingsTitle.TextColor3 = Theme.SectionText
+settingsTitle.TextSize = 14
+settingsTitle.TextXAlignment = Enum.TextXAlignment.Left
+settingsTitle.ZIndex = 102
+settingsTitle.Parent = settingsTopbar
+
+
+--// SETTINGS CLOSE
+
+local settingsClose = Instance.new("TextButton")
+settingsClose.Name = "SettingsClose"
+settingsClose.BackgroundTransparency = 1
+settingsClose.Position = UDim2.new(1, -35, 0, 0)
+settingsClose.Size = UDim2.new(0, 35, 0, 35)
+settingsClose.Font = Enum.Font.GothamBold
+settingsClose.Text = "×"
+settingsClose.TextColor3 = Color3.fromRGB(255, 255, 255)
+settingsClose.TextSize = 20
+settingsClose.ZIndex = 102
+settingsClose.Parent = settingsTopbar
+
+settingsClose.MouseButton1Click:Connect(function()
+    settingsOpen = false
+    settingsFrame.Visible = false
+end)
+
+
+--// THEME LABEL
+
+local themeLabel = Instance.new("TextLabel")
+themeLabel.Name = "ThemeLabel"
+themeLabel.BackgroundTransparency = 1
+themeLabel.Position = UDim2.new(0, 12, 0, 52)
+themeLabel.Size = UDim2.new(0, 100, 0, 25)
+themeLabel.Font = Enum.Font.GothamBold
+themeLabel.Text = "Theme"
+themeLabel.TextColor3 = Theme.ItemText
+themeLabel.TextSize = 12
+themeLabel.TextXAlignment = Enum.TextXAlignment.Left
+themeLabel.ZIndex = 101
+themeLabel.Parent = settingsFrame
+
+
+--// THEME BUTTONS
+
+local themesList = {
+    "Dark",
+    "Tokyo Night",
+    "Starry Night"
+}
+
+local themeButtons = {}
+
+local function CreateThemeButton(themeName, index)
+    local button = Instance.new("TextButton")
+    button.Name = themeName .. "Button"
+    button.BackgroundColor3 = Theme.ItemFrame
+    button.BorderSizePixel = 0
+    button.Position = UDim2.new(0, 12, 0, 80 + ((index - 1) * 30))
+    button.Size = UDim2.new(1, -24, 0, 25)
+    button.Font = Enum.Font.GothamBold
+    button.Text = themeName
+    button.TextColor3 = Theme.ItemText
+    button.TextSize = 11
+    button.AutoButtonColor = false
+    button.ZIndex = 101
+    button.Parent = settingsFrame
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Theme.ItemUIStroke
+    stroke.Parent = button
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 3)
+    corner.Parent = button
+
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Themes[library.Theme].HoverItemFrame
+    end)
+
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Themes[library.Theme].ItemFrame
+    end)
+
+    button.MouseButton1Click:Connect(function()
+        if Themes[themeName] then
+            library.Theme = themeName
+
+            -- обновляем цвета основных элементов
+            local NewTheme = Themes[themeName]
+
+            main.BackgroundColor3 = NewTheme.Main
+            topbar.BackgroundColor3 = NewTheme.Topbar
+            tabContainer.BackgroundColor3 = NewTheme.TabContainer
+            topbarLine.BackgroundColor3 = NewTheme.Lines
+
+            settingsFrame.BackgroundColor3 = NewTheme.Main
+            settingsTopbar.BackgroundColor3 = NewTheme.Topbar
+            settingsTitle.TextColor3 = NewTheme.SectionText
+            themeLabel.TextColor3 = NewTheme.ItemText
+            settingsStroke.Color = NewTheme.MainUIStroke
+
+            mainShadow.ImageColor3 = NewTheme.Shadow
+
+            for _, object in ipairs(main:GetDescendants()) do
+
+                if object.Name == "SectionFrame" then
+                    object.BackgroundColor3 = NewTheme.SectionFrame
+
+                elseif object.Name == "SectionName" then
+                    object.TextColor3 = NewTheme.SectionText
+
+                elseif object.Name == "SectionIcon" then
+                    object.ImageColor3 = NewTheme.SectionText
+
+                elseif object.Name == "ButtonFrame"
+                    or object.Name == "toggleFrame"
+                    or object.Name == "sliderFrame"
+                    or object.Name == "inputFrame"
+                    or object.Name == "dropdownFrame"
+                    or object.Name == "keybindFrame" then
+
+                    object.BackgroundColor3 = NewTheme.ItemFrame
+
+                elseif object.Name == "ButtonText"
+                    or object.Name == "toggleText"
+                    or object.Name == "sliderText"
+                    or object.Name == "sliderValueText"
+                    or object.Name == "inputText"
+                    or object.Name == "dropdownText"
+                    or object.Name == "keybindText" then
+
+                    object.TextColor3 = NewTheme.ItemText
+
+                elseif object.Name == "buttonUIStroke"
+                    or object.Name == "toggleUIStroke"
+                    or object.Name == "sliderUIStroke"
+                    or object.Name == "inputUIStroke"
+                    or object.Name == "dropdownUIStroke"
+                    or object.Name == "keybindUIStroke" then
+
+                    object.Color = NewTheme.ItemUIStroke
+
+                elseif object.Name == "ToggleOuter" then
+                    object.BackgroundColor3 = NewTheme.ToggleOuter
+
+                elseif object.Name == "toggleOuterUIStroke" then
+                    object.Color = NewTheme.ToggleOuterUIStroke
+
+                elseif object.Name == "toggleInner" then
+                    object.ImageColor3 = NewTheme.ToggleInner
+
+                elseif object.Name == "sliderOuter" then
+                    object.BackgroundColor3 = NewTheme.SliderOuter
+
+                elseif object.Name == "sliderInner" then
+                    object.BackgroundColor3 = NewTheme.SliderInner
+
+                elseif object.Name == "dragIcon" then
+                    object.ImageColor3 = NewTheme.ItemText
+
+                elseif object.Name == "KeybindOuter" then
+                    object.BackgroundColor3 = NewTheme.ToggleOuter
+
+                elseif object.Name == "keybindOuterUIStroke" then
+                    object.Color = NewTheme.ToggleOuterUIStroke
+
+                elseif object.Name == "TabFrame" then
+                    object.BackgroundColor3 = NewTheme.TabFrame
+
+                elseif object.Name == "TabName" then
+                    object.TextColor3 = NewTheme.TabText
+
+                elseif object.Name == "UIStroke" then
+                    object.Color = NewTheme.MainUIStroke
+                end
+            end
+
+            -- обновляем кнопки тем
+            for _, themeButton in pairs(themeButtons) do
+                themeButton.BackgroundColor3 = NewTheme.ItemFrame
+                themeButton.TextColor3 = NewTheme.ItemText
+
+                local s = themeButton:FindFirstChildOfClass("UIStroke")
+                if s then
+                    s.Color = NewTheme.ItemUIStroke
+                end
+            end
+
+            -- обновляем цвета самой кнопки Settings
+            settingsButton.ImageColor3 = NewTheme.Highlight
+        end
+    end)
+
+    themeButtons[themeName] = button
+
+    return button
+end
+
+for index, themeName in ipairs(themesList) do
+    CreateThemeButton(themeName, index)
+end
+
+
+--// OPEN KEY LABEL
+
+local bindLabel = Instance.new("TextLabel")
+bindLabel.Name = "BindLabel"
+bindLabel.BackgroundTransparency = 1
+bindLabel.Position = UDim2.new(0, 12, 0, 180)
+bindLabel.Size = UDim2.new(0, 120, 0, 25)
+bindLabel.Font = Enum.Font.GothamBold
+bindLabel.Text = "Open Key"
+bindLabel.TextColor3 = Theme.ItemText
+bindLabel.TextSize = 12
+bindLabel.TextXAlignment = Enum.TextXAlignment.Left
+bindLabel.ZIndex = 101
+bindLabel.Parent = settingsFrame
+
+
+--// OPEN KEY BUTTON
+
+local bindButton = Instance.new("TextButton")
+bindButton.Name = "BindButton"
+bindButton.BackgroundColor3 = Theme.ItemFrame
+bindButton.BorderSizePixel = 0
+bindButton.Position = UDim2.new(1, -112, 0, 178)
+bindButton.Size = UDim2.new(0, 100, 0, 25)
+bindButton.Font = Enum.Font.GothamBold
+bindButton.Text = OpenKey.Name
+bindButton.TextColor3 = Theme.ItemText
+bindButton.TextSize = 11
+bindButton.AutoButtonColor = false
+bindButton.ZIndex = 101
+bindButton.Parent = settingsFrame
+
+local bindStroke = Instance.new("UIStroke")
+bindStroke.Color = Theme.ItemUIStroke
+bindStroke.Parent = bindButton
+
+local bindCorner = Instance.new("UICorner")
+bindCorner.CornerRadius = UDim.new(0, 3)
+bindCorner.Parent = bindButton
+
+
+--// CHANGE OPEN KEY
+
+local changingKey = false
+local keyConnection
+
+bindButton.MouseButton1Click:Connect(function()
+
+    if changingKey then
+        return
+    end
+
+    changingKey = true
+    bindButton.Text = "Press key..."
+
+    if keyConnection then
+        keyConnection:Disconnect()
+    end
+
+    keyConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+
+        if gameProcessed then
+            return
+        end
+
+        if input.UserInputType ~= Enum.UserInputType.Keyboard then
+            return
+        end
+
+        if input.KeyCode == Enum.KeyCode.Unknown then
+            return
+        end
+
+        OpenKey = input.KeyCode
+
+        bindButton.Text = OpenKey.Name
+
+        changingKey = false
+
+        if keyConnection then
+            keyConnection:Disconnect()
+            keyConnection = nil
+        end
+    end)
+end)
+
+
+--// OPEN SETTINGS
+
+settingsButton.MouseButton1Click:Connect(function()
+    settingsOpen = not settingsOpen
+    settingsFrame.Visible = settingsOpen
+end)
+
+
+--// PUBLIC SETTINGS FUNCTIONS
+
+function window:OpenSettings()
+    settingsOpen = true
+    settingsFrame.Visible = true
+end
+
+function window:CloseSettings()
+    settingsOpen = false
+    settingsFrame.Visible = false
+end
+
+function window:SetTheme(themeName)
+    if Themes[themeName] then
+        library.Theme = themeName
+
+        if themeButtons[themeName] then
+            themeButtons[themeName]:Activate()
+        end
+
+        return true
+    end
+
+    return false
+end
+
+function library:SetTheme(themeName)
+    if Themes[themeName] then
+        library.Theme = themeName
+        return true
+    end
+
+    return false
+end
+
+function library:GetThemes()
+    local result = {}
+
+    for name in pairs(Themes) do
+        table.insert(result, name)
+    end
+
+    return result
+end
